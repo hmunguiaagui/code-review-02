@@ -46,6 +46,21 @@ func TestServiceVehicleDefault_FindByColorAndYear(t *testing.T) {
 		require.NoError(t, err)
 		require.Len(t, v, 1)
 		require.Equal(t, 1, v[1].Id)
-		require.Equal(t, vehicleMap[1], v[1])
+		require.Equal(t, vehicleMap, v)
+	})
+	t.Run("error", func(t *testing.T) {
+		// arrange
+		emptyVehicleMap := map[int]internal.Vehicle{}
+
+		rp := repository.NewVehicleMock()
+		rp.On("FindByColorAndYear", "red", 2010).Return(emptyVehicleMap, internal.ErrRepositoryInvalidFind)
+
+		s := service.NewServiceVehicleDefault(rp)
+		// act
+		v, err := s.FindByColorAndYear("red", 2010)
+		// assert
+		require.Error(t, err)
+		require.Len(t, v, 0)
+		require.Equal(t, emptyVehicleMap, v)
 	})
 }
