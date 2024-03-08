@@ -87,4 +87,41 @@ func TestHandlerVehicle_FindByColorAndYear(t *testing.T) {
 		require.JSONEq(t, expectedBody, response.Body.String())
 		require.Equal(t, expectedHeaders, response.Header())
 	})
+	t.Run("error", func(t *testing.T) {
+		// arrenge
+		emptyVehicleMap := map[int]internal.Vehicle{}
+
+		sv := service.NewServiceVehicleDefaultMock()
+		sv.On("FindByColorAndYear", "red", 2010).Return(emptyVehicleMap, nil)
+
+		h := handler.NewHandlerVehicle(sv)
+		hFindByColorAndYear := h.FindByColorAndYear()
+
+		// expected
+		expectedStatus := http.StatusOK
+		expectedBody := `
+		{
+			"data": {},
+			"message": "vehicles found"
+		}
+		`
+		expectedHeaders := http.Header{
+			"Content-Type": []string{"application/json; charset=utf-8"},
+		}
+
+		// act
+		request := httptest.NewRequest(http.MethodGet, "/vehicles/color/{color}/year/{year}", nil)
+		reponse := httptest.NewRecorder()
+
+		chiContext := chi.NewRouteContext()
+		chiContext.URLParams.Add("color", "red")
+		chiContext.URLParams.Add("year", "2010")
+		request = request.WithContext(context.WithValue(request.Context(), chi.RouteCtxKey, chiContext))
+		hFindByColorAndYear.ServeHTTP(reponse, request)
+
+		// assert
+		require.Equal(t, expectedStatus, reponse.Code)
+		require.JSONEq(t, expectedBody, reponse.Body.String())
+		require.Equal(t, expectedHeaders, reponse.Header())
+	})
 }
