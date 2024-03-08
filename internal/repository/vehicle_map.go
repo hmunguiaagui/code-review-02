@@ -1,6 +1,9 @@
 package repository
 
-import "app/internal"
+import (
+	"app/internal"
+	"errors"
+)
 
 // NewRepositoryReadVehicleMap is a function that returns a new instance of RepositoryReadVehicleMap
 func NewRepositoryReadVehicleMap(db map[int]internal.Vehicle) *RepositoryReadVehicleMap {
@@ -67,6 +70,9 @@ func (r *RepositoryReadVehicleMap) FindByBrand(brand string) (v map[int]internal
 		if value.Brand == brand {
 			v[key] = value
 		}
+	}
+	if len(v) == 0 {
+		err = errors.New("not found")
 	}
 
 	return
