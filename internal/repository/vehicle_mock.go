@@ -42,7 +42,7 @@ func (m *VehicleMock) FindByBrand(brand string) (v map[int]internal.Vehicle, err
 }
 
 // FindByWeightRange is a method that returns a map of vehicles that match a range of weight
-func (m *VehicleMock) FindByWeightRange(startWeight int, endWeight int) (v map[int]internal.Vehicle, err error) {
+func (m *VehicleMock) FindByWeightRange(startWeight float64, endWeight float64) (v map[int]internal.Vehicle, err error) {
 	args := m.Called(startWeight, endWeight)
 	return args.Get(0).(map[int]internal.Vehicle), args.Error(1)
 }
