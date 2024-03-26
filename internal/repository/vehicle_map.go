@@ -30,6 +30,11 @@ func (r *RepositoryReadVehicleMap) FindAll() (v map[int]internal.Vehicle, err er
 		v[key] = value
 	}
 
+	// check if there are any results
+	if len(v) == 0 {
+		err = errors.New("not found")
+	}
+
 	return
 }
 
