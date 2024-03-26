@@ -8,9 +8,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TestRepositoryReadVehicleMap_FindAll is a test that checks the method FindAll of the repository RepositoryReadVehicleMap
-func TestRepositoryReadVehicleMap_FindAll(t *testing.T) {
+// TestRepositoryVehicleMap_FindByBrand is a method that returns a map of vehicles that match the brand
+func TestRepositoryVehicleMap_FindByBrand(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
+		// /vehicles/average_speed/brand/{brand}
 		// arrange
 		vehicleMap := map[int]internal.Vehicle{
 			1: {
@@ -18,26 +19,25 @@ func TestRepositoryReadVehicleMap_FindAll(t *testing.T) {
 				VehicleAttributes: internal.VehicleAttributes{
 					Brand:           "Ford",
 					Model:           "Fiesta",
-					Registration:    "0",
+					Registration:    "ABC-1234",
+					Color:           "Red",
 					FabricationYear: 2010,
-					Color:           "red",
-					Capacity:        4,
-					MaxSpeed:        200,
-					FuelType:        "gasoline",
-					Transmission:    "manual",
+					Capacity:        5,
+					MaxSpeed:        180,
+					FuelType:        "Gasoline",
+					Transmission:    "Manual",
 					Weight:          1000,
 					Dimensions: internal.Dimensions{
-						Height: 100,
-						Length: 200,
-						Width:  300,
+						Height: 1.5,
+						Length: 4,
+						Width:  1.8,
 					},
 				},
 			},
 		}
-
 		rp := repository.NewRepositoryReadVehicleMap(vehicleMap)
 		// act
-		v, err := rp.FindAll()
+		v, err := rp.FindByBrand("Ford")
 		// assert
 		require.NoError(t, err)
 		require.Len(t, v, 1)
@@ -46,14 +46,14 @@ func TestRepositoryReadVehicleMap_FindAll(t *testing.T) {
 	})
 	t.Run("error", func(t *testing.T) {
 		// arrange
-		emptyVehicleMap := map[int]internal.Vehicle{}
-
-		rp := repository.NewRepositoryReadVehicleMap(emptyVehicleMap)
+		vehicleMap := map[int]internal.Vehicle{}
+		rp := repository.NewRepositoryReadVehicleMap(vehicleMap)
 		// act
-		v, err := rp.FindAll()
+		v, err := rp.FindByBrand("Ford")
 		// assert
-		require.NoError(t, err)
+		require.Error(t, err)
+		require.EqualError(t, err, "not found.")
 		require.Len(t, v, 0)
-		require.Equal(t, emptyVehicleMap, v)
+		require.Equal(t, vehicleMap, v)
 	})
 }

@@ -1,6 +1,9 @@
 package repository
 
-import "app/internal"
+import (
+	"app/internal"
+	"errors"
+)
 
 // NewRepositoryReadVehicleMap is a function that returns a new instance of RepositoryReadVehicleMap
 func NewRepositoryReadVehicleMap(db map[int]internal.Vehicle) *RepositoryReadVehicleMap {
@@ -27,6 +30,11 @@ func (r *RepositoryReadVehicleMap) FindAll() (v map[int]internal.Vehicle, err er
 		v[key] = value
 	}
 
+	// check if there are any results
+	if len(v) == 0 {
+		err = errors.New("not found")
+	}
+
 	return
 }
 
@@ -39,6 +47,11 @@ func (r *RepositoryReadVehicleMap) FindByColorAndYear(color string, fabricationY
 		if value.Color == color && value.FabricationYear == fabricationYear {
 			v[key] = value
 		}
+	}
+
+	// check if there are any results
+	if len(v) == 0 {
+		err = errors.New("not found")
 	}
 
 	return
@@ -55,6 +68,11 @@ func (r *RepositoryReadVehicleMap) FindByBrandAndYearRange(brand string, startYe
 		}
 	}
 
+	// check if there are any results
+	if len(v) == 0 {
+		err = errors.New("not found")
+	}
+
 	return
 }
 
@@ -67,6 +85,9 @@ func (r *RepositoryReadVehicleMap) FindByBrand(brand string) (v map[int]internal
 		if value.Brand == brand {
 			v[key] = value
 		}
+	}
+	if len(v) == 0 {
+		err = errors.New("not found")
 	}
 
 	return
@@ -81,6 +102,11 @@ func (r *RepositoryReadVehicleMap) FindByWeightRange(fromWeight float64, toWeigh
 		if value.Weight >= fromWeight && value.Weight <= toWeight {
 			v[key] = value
 		}
+	}
+
+	// check if there are any results
+	if len(v) == 0 {
+		err = errors.New("not found")
 	}
 
 	return
