@@ -52,7 +52,7 @@ func TestRepositoryVehicleMap_FindByBrand(t *testing.T) {
 		v, err := rp.FindByBrand("Ford")
 		// assert
 		require.Error(t, err)
-		require.EqualError(t, err, "not found")
+		require.EqualError(t, err, "not found.")
 		require.Len(t, v, 0)
 		require.Equal(t, vehicleMap, v)
 	})
